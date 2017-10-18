@@ -2,7 +2,8 @@ module RailsAdminNestedSet
   module Helper
     def rails_admin_nested_set(tree, opts= {})
       tree = tree.to_a.sort_by { |m| m.lft }
-      roots = tree.select{|elem| elem.parent_id.nil?}
+      ids = tree.map(&:id)
+      roots = tree.select{|elem| elem.parent_id.nil? || !ids.include?(elem.parent_id) }
       id = "ns_#{rand(100_000_000..999_999_999)}"
       tree_config = {
         max_depth: max_depth,
@@ -56,7 +57,7 @@ module RailsAdminNestedSet
             content += extra_fields(node)
 
             content += content_tag(:div, action_links(node), class: 'pull-right links')
-            
+
             thumbnail_fields.each do |mth|
               if node.respond_to?(mth)
                 img = if paperclip?
