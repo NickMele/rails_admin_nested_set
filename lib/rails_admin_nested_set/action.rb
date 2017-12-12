@@ -60,9 +60,9 @@ module RailsAdmin
             else
               @nodes = list_entries(@model_config, :index, nil, nil)
 
-              unless @model_config.list.scopes.empty?
+              if @model_config.list.scopes.present?
                 if params[:scope].blank?
-                  unless @model_config.nested_set[:scopes].first.nil?
+                  if @model_config.nested_set[:scopes]&.first.present?
                     @nodes = @nodes.send(@model_config.nested_set[:scopes].first)
                   end
                 elsif @model_config.nested_set[:scopes].collect(&:to_s).include?(params[:scope])
